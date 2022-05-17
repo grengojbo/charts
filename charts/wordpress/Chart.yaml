@@ -1,6 +1,10 @@
 annotations:
   category: CMS
 apiVersion: v2
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
 appVersion: 5.9.3
 dependencies:
   - condition: memcached.enabled
@@ -17,8 +21,7 @@ dependencies:
       - bitnami-common
     version: 1.x.x
 description: WordPress is the world's most popular blogging and content management platform. Powerful yet simple, everyone from students to global corporations use it to build beautiful, functional websites.
-engine: gotpl
-home: https://github.com/bitnami/charts/tree/master/bitnami/wordpress
+home: https://github.com/grengojbo/charts/tree/master/bitnami/wordpress
 icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png
 keywords:
   - application
@@ -29,10 +32,13 @@ keywords:
   - web
   - wordpress
 maintainers:
-  - email: containers@bitnami.com
-    name: Bitnami
+  - email: oleg.dolya@gmail.com
+    name: grengojbo
 name: wordpress
 sources:
   - https://github.com/bitnami/bitnami-docker-wordpress
   - https://wordpress.org/
-version: 14.0.8
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 14.0.9

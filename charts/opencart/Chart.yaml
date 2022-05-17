@@ -1,30 +1,38 @@
 annotations:
-  category: CRM
+  category: E-Commerce
 apiVersion: v2
-appVersion: 15.0.20220510
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
+appVersion: 3.0.3-8
 dependencies:
-  - condition: postgresql.enabled
-    name: postgresql
+  - condition: mariadb.enabled
+    name: mariadb
     repository: https://charts.bitnami.com/bitnami
     version: 11.x.x
   - name: common
     repository: https://charts.bitnami.com/bitnami
+    tags:
+      - bitnami-common
     version: 1.x.x
-description: Odoo is an open source ERP and CRM platform, formerly known as OpenERP, that can connect a wide variety of business operations such as sales, supply chain, finance, and project management.
-engine: gotpl
-home: https://github.com/bitnami/charts/tree/master/bitnami/odoo
-icon: https://bitnami.com/assets/stacks/odoo/img/odoo-stack-220x234.png
+description: OpenCart is free open source ecommerce platform for online merchants. OpenCart provides a professional and reliable foundation from which to build a successful online store.
+home: https://github.com/grengojbo/charts/tree/master/bitnami/opencart
+icon: https://bitnami.com/assets/stacks/opencart/img/opencart-stack-220x234.png
 keywords:
-  - odoo
-  - crm
-  - www
+  - opencart
+  - e-commerce
   - http
   - web
+  - php
 maintainers:
-  - email: containers@bitnami.com
-    name: Bitnami
-name: odoo
+  - email: oleg.dolya@gmail.com
+    name: grengojbo
+name: opencart
 sources:
-  - https://github.com/bitnami/bitnami-docker-odoo
-  - https://www.odoo.com/
-version: 21.2.11
+  - https://github.com/bitnami/bitnami-docker-opencart
+  - https://opencart.com/
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 12.1.1

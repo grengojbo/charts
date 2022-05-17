@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "common.names.fullname" . }}
-  namespace: {{ .Release.Namespace | quote }}
+  name: {{ include "common.names.fullname" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     {{- if .Values.commonLabels }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
@@ -37,11 +37,28 @@ spec:
   {{- end }}
   ports:
     - name: http
-      port: {{ coalesce .Values.service.ports.http .Values.service.port }}
+      {{- if and (eq .Values.service.type "ClusterIP") (eq .Values.service.clusterIP "none") }}
+      port: {{ .Values.service.ports.http }}
+      {{- else }}
+      port: {{ .Values.containerPorts.http }}
+      {{- end }}
       protocol: TCP
       targetPort: http
-      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) (not (empty (coalesce .Values.service.nodePorts.http .Values.service.nodePort))) }}
-      nodePort: {{ coalesce .Values.service.nodePorts.http .Values.service.nodePort }}
+      {{- if (and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) (not (empty .Values.service.nodePorts.http))) }}
+      nodePort: {{ .Values.service.nodePorts.http }}
+      {{- else if eq .Values.service.type "ClusterIP" }}
+      nodePort: null
+      {{- end }}
+    - name: https
+      {{- if ne .Values.service.type "ClusterIP" }}
+      port: {{ .Values.containerPorts.https }}
+      {{- else }}
+      port: {{ .Values.service.ports.https }}
+      {{- end }}
+      protocol: TCP
+      targetPort: {{ .Values.service.httpsTargetPort }}
+      {{- if (and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) (not (empty .Values.service.nodePorts.https))) }}
+      nodePort: {{ .Values.service.nodePorts.https }}
       {{- else if eq .Values.service.type "ClusterIP" }}
       nodePort: null
       {{- end }}

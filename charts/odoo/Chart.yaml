@@ -1,6 +1,10 @@
 annotations:
   category: CRM
 apiVersion: v2
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
 appVersion: 15.0.20220510
 dependencies:
   - condition: postgresql.enabled
@@ -11,8 +15,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     version: 1.x.x
 description: Odoo is an open source ERP and CRM platform, formerly known as OpenERP, that can connect a wide variety of business operations such as sales, supply chain, finance, and project management.
-engine: gotpl
-home: https://github.com/bitnami/charts/tree/master/bitnami/odoo
+home: https://github.com/grengojbo/charts/tree/master/bitnami/odoo
 icon: https://bitnami.com/assets/stacks/odoo/img/odoo-stack-220x234.png
 keywords:
   - odoo
@@ -21,10 +24,13 @@ keywords:
   - http
   - web
 maintainers:
-  - email: containers@bitnami.com
-    name: Bitnami
+  - email: oleg.dolya@gmail.com
+    name: grengojbo
 name: odoo
 sources:
   - https://github.com/bitnami/bitnami-docker-odoo
   - https://www.odoo.com/
-version: 21.2.11
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 21.2.12

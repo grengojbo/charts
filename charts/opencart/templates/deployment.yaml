@@ -1,8 +1,9 @@
-apiVersion: {{ template "common.capabilities.deployment.apiVersion" . }}
+{{- if include "opencart.host" . -}}
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ template "common.names.fullname" . }}
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "common.names.namespace" . | quote }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     {{- if .Values.commonLabels }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
@@ -11,28 +12,32 @@ metadata:
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
   {{- if .Values.updateStrategy }}
   strategy: {{- toYaml .Values.updateStrategy | nindent 4 }}
   {{- end }}
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels: {{- include "common.labels.standard" . | nindent 8 }}
+        {{- if .Values.commonLabels }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 8 }}
+        {{- end }}
         {{- if .Values.podLabels }}
         {{- include "common.tplvalues.render" (dict "value" .Values.podLabels "context" $) | nindent 8 }}
         {{- end }}
-      {{- if .Values.podAnnotations }}
-      annotations: {{- include "common.tplvalues.render" (dict "value" .Values.podAnnotations "context" $) | nindent 8 }}
-      {{- end }}
+      annotations:
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.metrics.podAnnotations }}
+        {{- toYaml .Values.metrics.podAnnotations | nindent 8 }}
+        {{- end }}
     spec:
-      {{- include "odoo.imagePullSecrets" . | nindent 6 }}
-      serviceAccountName: {{ template "odoo.serviceAccountName" . }}
-      {{- if .Values.hostAliases }}
-      hostAliases: {{- include "common.tplvalues.render" (dict "value" .Values.hostAliases "context" $) | nindent 8 }}
+      {{- include "opencart.imagePullSecrets" . | nindent 6 }}
+      {{- if .Values.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.podSecurityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
       {{- if .Values.affinity }}
       affinity: {{- include "common.tplvalues.render" (dict "value" .Values.affinity "context" $) | nindent 8 }}
@@ -42,150 +47,171 @@ spec:
         podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "context" $) | nindent 10 }}
         nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 10 }}
       {{- end }}
+      {{- if .Values.schedulerName }}
+      schedulerName: {{ .Values.schedulerName }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.topologySpreadConstraints "context" .) | nindent 8 }}
+      {{- end }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- if .Values.nodeSelector }}
       nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.nodeSelector "context" $) | nindent 8 }}
       {{- end }}
       {{- if .Values.tolerations }}
       tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.tolerations "context" $) | nindent 8 }}
       {{- end }}
-      {{- if .Values.topologySpreadConstraints }}
-      topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.topologySpreadConstraints "context" .) | nindent 8 }}
+      {{- if .Values.hostAliases }}
+      # yamllint disable rule:indentation
+      hostAliases: {{- include "common.tplvalues.render" (dict "value" .Values.hostAliases "context" $) | nindent 8 }}
+      # yamllint enable rule:indentation
       {{- end }}
-      {{- if .Values.priorityClassName }}
-      priorityClassName: {{ .Values.priorityClassName | quote }}
-      {{- end }}
-      {{- if .Values.schedulerName }}
-      schedulerName: {{ .Values.schedulerName | quote }}
-      {{- end }}
-      {{- if .Values.podSecurityContext.enabled }}
-      securityContext: {{- omit .Values.podSecurityContext "enabled" | toYaml | nindent 8 }}
-      {{- end }}
-      {{- if .Values.terminationGracePeriodSeconds }}
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      {{- end }}
-      {{- if or (and .Values.volumePermissions.enabled .Values.persistence.enabled) .Values.initContainers }}
       initContainers:
+        {{- if .Values.initContainers }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.initContainers "context" $) | nindent 8 }}
+        {{- end }}
         {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
         - name: volume-permissions
-          image: {{ include "odoo.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          image: {{ include "opencart.volumePermissions.image" . }}
+          imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
           command:
-            - /bin/bash
-          args:
-            - -ec
+            - sh
+            - -c
             - |
-              mkdir -p /bitnami/odoo
-              find /bitnami/odoo -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | xargs -r chown -R odoo:root
-          {{- if .Values.volumePermissions.containerSecurityContext.enabled }}
-          securityContext: {- omit .Values.volumePermissions.containerSecurityContext "enabled" | toYaml | nindent 12 }}
-          {{- end }}
+              mkdir -p "/bitnami/opencart" "/bitnami/opencart_storage"
+              chown -R "{{ .Values.containerSecurityContext.runAsUser }}:{{ .Values.podSecurityContext.fsGroup }}" "/bitnami/opencart" "/bitnami/opencart_storage"
+          securityContext:
+            runAsUser: 0
           {{- if .Values.volumePermissions.resources }}
           resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: odoo-data
-              mountPath: /bitnami/odoo
+            - name: opencart-data
+              mountPath: /bitnami/opencart
+              subPath: opencart
+            - name: opencart-data
+              mountPath: /bitnami/opencart_storage
+              subPath: opencart_storage
         {{- end }}
-        {{- if .Values.initContainers }}
-        {{- include "common.tplvalues.render" (dict "value" .Values.initContainers "context" $) | nindent 8 }}
+        {{- if .Values.certificates.customCAs }}
+        - name: certificates
+          image: {{ template "certificates.image" . }}
+          imagePullPolicy: {{ default .Values.image.pullPolicy .Values.certificates.image.pullPolicy }}
+          imagePullSecrets:
+          {{- range (default .Values.image.pullSecrets .Values.certificates.image.pullSecrets) }}
+            - name: {{ . }}
+          {{- end }}
+          command:
+          {{- if .Values.certificates.command }}
+          command: {{- include "common.tplvalues.render" (dict "value" .Values.certificates.command "context" $) | nindent 12 }}
+          {{- else if .Values.certificates.customCertificate.certificateSecret }}
+          - sh
+          - -c
+          - install_packages ca-certificates openssl
+          {{- else }}
+          - sh
+          - -c
+          - install_packages ca-certificates openssl
+            && openssl req -new -x509 -days 3650 -nodes -sha256
+              -subj "/CN=$(hostname)" -addext "subjectAltName = DNS:$(hostname)"
+              -out  /etc/ssl/certs/ssl-cert-snakeoil.pem
+              -keyout /etc/ssl/private/ssl-cert-snakeoil.key -extensions v3_req
+          {{- end }}
+          {{- if .Values.certificates.args }}
+          args: {{- include "common.tplvalues.render" (dict "value" .Values.certificates.args "context" $) | nindent 12 }}
+          {{- end }}
+          env: {{- include "common.tplvalues.render" (dict "value" .Values.certificates.extraEnvVars "context" $) | nindent 12 }}
+          envFrom:
+            {{- if .Values.certificates.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "common.tplvalues.render" (dict "value" .Values.certificates.extraEnvVarsCM "context" $) }}
+            {{- end }}
+            {{- if .Values.certificates.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "common.tplvalues.render" (dict "value" .Values.certificates.extraEnvVarsSecret "context" $) }}
+            {{- end }}
+          volumeMounts:
+            - name: etc-ssl-certs
+              mountPath: /etc/ssl/certs
+              readOnly: false
+            - name: etc-ssl-private
+              mountPath: /etc/ssl/private
+              readOnly: false
+            - name: custom-ca-certificates
+              mountPath: /usr/local/share/ca-certificates
+              readOnly: true
         {{- end }}
-      {{- end }}
       containers:
-        - name: {{ template "common.names.fullname" . }}
-          image: {{ template "odoo.image" . }}
+        - name: {{ include "common.names.fullname" . }}
+          image: {{ template "opencart.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-          {{- if .Values.lifecycleHooks }}
-          lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
-          {{- end }}
-          {{- if .Values.containerSecurityContext.enabled }}
-          securityContext: {- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
-          {{- end }}
-          {{- if .Values.diagnosticMode.enabled }}
-          command: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.command "context" $) | nindent 12 }}
-          {{- else if .Values.command }}
+          {{- if .Values.command }}
           command: {{- include "common.tplvalues.render" (dict "value" .Values.command "context" $) | nindent 12 }}
           {{- end }}
-          {{- if .Values.diagnosticMode.enabled }}
-          args: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.args "context" $) | nindent 12 }}
-          {{- else if .Values.args }}
+          {{- if .Values.args }}
           args: {{- include "common.tplvalues.render" (dict "value" .Values.args "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
           env:
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" .Values.image.debug | quote }}
             - name: ALLOW_EMPTY_PASSWORD
               value: {{ ternary "yes" "no" .Values.allowEmptyPassword | quote }}
-            - name: ODOO_DATABASE_HOST
-              value: {{ template "odoo.databaseHost" . }}
-            - name: ODOO_DATABASE_PORT_NUMBER
-              value: {{ template "odoo.databasePort" . }}
-            - name: ODOO_DATABASE_NAME
-              value: {{ template "odoo.databaseName" . }}
-            - name: ODOO_DATABASE_USER
-              value: {{ template "odoo.databaseUser" . }}
-            - name: ODOO_DATABASE_PASSWORD
+            - name: APACHE_HTTP_PORT_NUMBER
+              value: {{ .Values.containerPorts.http | quote }}
+            - name: APACHE_HTTPS_PORT_NUMBER
+              value: {{ .Values.containerPorts.https | quote }}
+            - name: OPENCART_DATABASE_HOST
+              value: {{ include "opencart.databaseHost" . | quote }}
+            - name: OPENCART_DATABASE_PORT_NUMBER
+              value: {{ include "opencart.databasePort" . | quote }}
+            - name: OPENCART_DATABASE_NAME
+              value: {{ include "opencart.databaseName" . | quote }}
+            - name: OPENCART_DATABASE_USER
+              value: {{ include "opencart.databaseUser" . | quote }}
+            - name: OPENCART_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "odoo.databaseSecretName" . }}
-                  key: {{ include "odoo.databaseSecretPasswordKey" . }}
-            {{- if and (not .Values.postgresql.enabled) .Values.externalDatabase.create }}
-            - name: POSTGRESQL_CLIENT_DATABASE_HOST
-              value: {{ template "odoo.databaseHost" . }}
-            - name: POSTGRESQL_CLIENT_DATABASE_PORT_NUMBER
-              value: {{ template "odoo.databasePort" . }}
-            - name: POSTGRESQL_CLIENT_POSTGRES_USER
-              value: {{ .Values.externalDatabase.postgresqlPostgresUser }}
-            - name: POSTGRESQL_CLIENT_POSTGRES_PASSWORD
+                  name: {{ include "opencart.databaseSecretName" . }}
+                  key: mariadb-password
+            - name: OPENCART_ENABLE_HTTPS
+              value: {{ ternary "yes" "no" .Values.ingress.tls | quote }}
+            - name: OPENCART_SKIP_BOOTSTRAP
+              value: {{ ternary "yes" "no" .Values.opencartSkipInstall | quote }}
+            {{- $port:= (coalesce .Values.service.ports.http .Values.service.port) | toString }}
+            - name: OPENCART_HOST
+              value: "{{ include "opencart.host" . }}{{- if ne $port "80" }}:{{ coalesce .Values.service.ports.http .Values.service.port }}{{ end }}"
+            - name: OPENCART_USERNAME
+              value: {{ .Values.opencartUsername | quote }}
+            - name: OPENCART_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "odoo.databaseSecretName" . }}
-                  key: {{ include "odoo.databaseSecretPostgresPasswordKey" . }}
-            - name: POSTGRESQL_CLIENT_CREATE_DATABASE_NAME
-              value: {{ template "odoo.databaseName" . }}
-            - name: POSTGRESQL_CLIENT_CREATE_DATABASE_USERNAME
-              value: {{ template "odoo.databaseUser" . }}
-            - name: POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "odoo.databaseSecretName" . }}
-                  key: {{ include "odoo.databaseSecretPasswordKey" . }}
-            {{- end }}
-            - name: ODOO_EMAIL
-              value: {{ .Values.odooEmail | quote }}
-            - name: ODOO_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "odoo.secretName" . }}
-                  key: odoo-password
-            - name: ODOO_SKIP_BOOTSTRAP
-              value: {{ ternary "yes" "no" .Values.odooSkipInstall | quote }}
-            - name: ODOO_LOAD_DEMO_DATA
-              value: {{ ternary "yes" "no" .Values.loadDemoData | quote }}
-            {{- if .Values.withoutDemo }}
-            - name: WITHOUT_DEMO
-              value: {{ .Values.withoutDemo | quote }}
-            {{- end }}
+                  name: {{ include "common.names.fullname" . }}
+                  key: opencart-password
+            - name: OPENCART_EMAIL
+              value: {{ .Values.opencartEmail | quote }}
             {{- if .Values.smtpHost }}
-            - name: ODOO_SMTP_HOST
+            - name: SMTP_HOST
               value: {{ .Values.smtpHost | quote }}
             {{- end }}
             {{- if .Values.smtpPort }}
-            - name: ODOO_SMTP_PORT_NUMBER
+            - name: SMTP_PORT
               value: {{ .Values.smtpPort | quote }}
             {{- end }}
             {{- if .Values.smtpUser }}
-            - name: ODOO_SMTP_USER
+            - name: SMTP_USER
               value: {{ .Values.smtpUser | quote }}
             {{- end }}
-            {{- if or .Values.smtpPassword .Values.smtpExistingSecret }}
-            - name: ODOO_SMTP_PASSWORD
+            {{- if .Values.smtpPassword }}
+            - name: SMTP_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "odoo.smtpSecretName" . }}
+                  name: {{ include "common.names.fullname" . }}
                   key: smtp-password
             {{- end }}
             {{- if .Values.smtpProtocol }}
-            - name: ODOO_SMTP_PROTOCOL
+            - name: SMTP_PROTOCOL
               value: {{ .Values.smtpProtocol | quote }}
             {{- end }}
             {{- if .Values.extraEnvVars }}
@@ -200,65 +226,109 @@ spec:
             - secretRef:
                 name: {{ include "common.tplvalues.render" (dict "value" .Values.extraEnvVarsSecret "context" $) }}
             {{- end }}
+          {{- if .Values.lifecycleHooks }}
+          lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
-              containerPort: {{ coalesce .Values.containerPorts.http .Values.containerPort }}
-          {{- if not .Values.diagnosticMode.enabled }}
+              containerPort: {{ .Values.containerPorts.http }}
+            - name: https
+              containerPort: {{ .Values.containerPorts.https }}
+          {{- if .Values.startupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.startupProbe.path }}
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ include "opencart.host" . | quote }}
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+          {{- else if .Values.customStartupProbe }}
+          startupProbe: {{- include "common.tplvalues.render" (dict "value" .Values.customStartupProbe "context" $) | nindent 12 }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
-          livenessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.livenessProbe "enabled" "path") "context" $) | nindent 12 }}
+          livenessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.path }}
               port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ include "opencart.host" . | quote }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           {{- else if .Values.customLivenessProbe }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.customLivenessProbe "context" $) | nindent 12 }}
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
-          readinessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.readinessProbe "enabled" "path") "context" $) | nindent 12 }}
+          readinessProbe:
             httpGet:
               path: {{ .Values.readinessProbe.path }}
               port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ include "opencart.host" . | quote }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- else if .Values.customReadinessProbe }}
           readinessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.customReadinessProbe "context" $) | nindent 12 }}
-          {{- end }}
-          {{- if .Values.startupProbe.enabled }}
-          startupProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.startupProbe "enabled" "path") "context" $) | nindent 12 }}
-            httpGet:
-              path: {{ .Values.startupProbe.path }}
-              port: http
-          {{- else if .Values.customStartupProbe }}
-          startupProbe: {{- include "common.tplvalues.render" (dict "value" .Values.customStartupProbe "context" $) | nindent 12 }}
-          {{- end }}
           {{- end }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: odoo-data
-              mountPath: /bitnami/odoo
-            {{- if .Values.customPostInitScripts }}
-            - mountPath: /docker-entrypoint-init.d
-              name: custom-postinit
-            {{- end }}
+            - name: opencart-data
+              mountPath: /bitnami/opencart
+              subPath: opencart
+            - name: opencart-data
+              mountPath: /bitnami/opencart_storage
+              subPath: opencart_storage
             {{- if .Values.extraVolumeMounts }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
             {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: {{ template "opencart.metrics.image" . }}
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
+          command: [ '/bin/apache_exporter', '--scrape_uri', 'http://status.localhost:{{ .Values.containerPorts.http }}/server-status/?auto' ]
+          ports:
+            - name: metrics
+              containerPort: 9117
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          resources: {{- toYaml .Values.metrics.resources | nindent 12 }}
+        {{- end }}
         {{- if .Values.sidecars }}
         {{- include "common.tplvalues.render" (dict "value" .Values.sidecars "context" $) | nindent 8 }}
         {{- end }}
       volumes:
-        - name: odoo-data
+        - name: opencart-data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ (tpl .Values.persistence.existingClaim $) | default (include "common.names.fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (printf "%s-opencart" (include "common.names.fullname" .)) }}
           {{- else }}
           emptyDir: {}
           {{- end }}
-        {{- if .Values.customPostInitScripts }}
-        - name: custom-postinit
-          configMap:
-            name: {{ printf "%s-postinit" (include "common.names.fullname" .) }}
-            defaultMode: 0755
-        {{- end }}
         {{- if .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
         {{- end }}
+{{- end -}}

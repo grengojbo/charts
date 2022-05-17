@@ -15,3 +15,12 @@ To install the <chart-name> chart:
 To uninstall the chart:
 
     helm delete my-<chart-name>
+
+### For Chart Developer
+
+change files: 
+
+  - charts/*/templates/18-letsencrypt-prod.yaml
+  - charts/*/templates/ingress.yaml
+  - charts/odoo/templates/svc.yaml
+  - charts/{opencart,wordpress}/templates/svc.yaml (service http,https)

@@ -1,12 +1,14 @@
-{{- $certType := pluck .Values.global.env .Values.ingress.certType | first | default .Values.ingress.certType._default }}
-{{- if eq $certType "letsencrypt-prod" }}
-{{- $email := pluck .Values.global.env .Values.ingress.acme.email | first | default .Values.ingress.acme.email._default }}
+{{- if and .Values.ingress.enabled .Values.ingress.tls }}
+  {{- $certType := pluck .Values.global.env .Values.ingress.certType | first | default .Values.ingress.certType._default }}
+  {{- if eq $certType "letsencrypt-prod" }}
+    {{- $email := pluck .Values.global.env .Values.ingress.acme.email | first | default .Values.ingress.acme.email._default }}
 ---
 apiVersion: cert-manager.io/v1
 # kind: ClusterIssuer
 kind: Issuer
 metadata:
-  name: letsencrypt-prod
+  name: {{ $certType }}
+  namespace: {{ include "common.names.namespace" . | quote }}
   # namespace: kube-system
 spec:
   acme:
@@ -16,10 +18,11 @@ spec:
     email: {{ $email }}
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: letsencrypt-prod
+      name: {{ $certType }}
     # Enable the HTTP-01 challenge provider
     solvers:
     - http01:
         ingress:
           class: {{ .Values.ingress.ingressClassName }}
+  {{- end }}
 {{- end }}

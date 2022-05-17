@@ -1,24 +1,26 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- if and (include "opencart.host" .) .Values.persistence.enabled (not .Values.persistence.existingClaim) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "common.names.fullname" . }}
-  namespace: {{ .Release.Namespace | quote }}
+  name: {{ include "common.names.fullname" . }}-opencart
+  namespace: {{ include "common.names.namespace" . | quote }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     {{- if .Values.commonLabels }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
     {{- end }}
+  {{- if or .Values.persistence.annotations .Values.commonAnnotations }}
   annotations:
-    {{- if .Values.persistence.resourcePolicy }}
-    helm.sh/resource-policy: {{ .Values.persistence.resourcePolicy | quote }}
-    {{- end }}
     {{- if .Values.persistence.annotations }}
-    {{- include "common.tplvalues.render" (dict "value" .Values.persistence.annotations "context" $) | nindent 4 }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.persistence.annotations "context" $ ) | nindent 4 }}
     {{- end }}
     {{- if .Values.commonAnnotations }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
     {{- end }}
+  {{- end }}
 spec:
+  {{- if .Values.persistence.hostPath }}
+  storageClassName: ""
+  {{- end }}
   accessModes:
   {{- if not (empty .Values.persistence.accessModes) }}
   {{- range .Values.persistence.accessModes }}
@@ -30,11 +32,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.size | quote }}
-  {{- if .Values.persistence.selector }}
-  selector: {{- include "common.tplvalues.render" (dict "value" .Values.persistence.selector "context" $) | nindent 4 }}
-  {{- end -}}
-  {{- if .Values.persistence.dataSource }}
-  dataSource: {{- include "common.tplvalues.render" (dict "value" .Values.persistence.dataSource "context" $) | nindent 4 }}
-  {{- end }}
-  {{- include "common.storage.class" (dict "persistence" .Values.persistence "global" .Values.global) | nindent 2 }}
-{{- end }}
+  {{- include "opencart.storageClass" . | nindent 2 }}
+{{- end -}}

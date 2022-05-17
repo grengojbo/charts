@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "common.names.fullname" . }}
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "common.names.namespace" . | quote }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     {{- if .Values.commonLabels }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
@@ -37,10 +37,10 @@ spec:
   {{- end }}
   ports:
     - name: http
-      {{- if ne .Values.service.type "ClusterIP" }}
-      port: {{ .Values.containerPorts.http }}
-      {{- else }}
+      {{- if and (eq .Values.service.type "ClusterIP") (eq .Values.service.clusterIP "none") }}
       port: {{ .Values.service.ports.http }}
+      {{- else }}
+      port: {{ .Values.containerPorts.http }}
       {{- end }}
       protocol: TCP
       targetPort: http
