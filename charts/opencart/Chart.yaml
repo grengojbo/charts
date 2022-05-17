@@ -17,7 +17,7 @@ dependencies:
       - bitnami-common
     version: 1.x.x
 description: OpenCart is free open source ecommerce platform for online merchants. OpenCart provides a professional and reliable foundation from which to build a successful online store.
-home: https://github.com/grengojbo/charts/tree/master/bitnami/opencart
+home: https://github.com/grengojbo/charts/tree/master/charts/opencart
 icon: https://bitnami.com/assets/stacks/opencart/img/opencart-stack-220x234.png
 keywords:
   - opencart

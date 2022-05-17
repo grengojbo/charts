@@ -15,7 +15,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     version: 1.x.x
 description: Odoo is an open source ERP and CRM platform, formerly known as OpenERP, that can connect a wide variety of business operations such as sales, supply chain, finance, and project management.
-home: https://github.com/grengojbo/charts/tree/master/bitnami/odoo
+home: https://github.com/grengojbo/charts/tree/master/charts/odoo
 icon: https://bitnami.com/assets/stacks/odoo/img/odoo-stack-220x234.png
 keywords:
   - odoo
