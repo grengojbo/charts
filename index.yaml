@@ -3,6 +3,20 @@ entries:
   lib:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-05-17T16:19:26.342421237Z"
+    description: A Helm chart library for Kubernetes
+    digest: da5fefe17cc7a5d482aff195a967a477879119b9edec135c427a6521c905711a
+    home: https://github.com/grengojbo/charts/tree/master/charts/lib
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: lib
+    type: library
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/lib-0.2.0/lib-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-04-04T10:11:12.86110113Z"
     description: A Helm chart library for Kubernetes
     digest: 085d736db0c8f91afda1737ffc581d51aa70664bb304f7ec478de179cc23653d
@@ -11,4 +25,116 @@ entries:
     urls:
     - https://github.com/grengojbo/charts/releases/download/lib-0.1.4/lib-0.1.4.tgz
     version: 0.1.4
+  odoo:
+  - annotations:
+      category: CRM
+    apiVersion: v2
+    appVersion: 15.0.20220510
+    created: "2022-05-17T16:19:26.500068556Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.x.x
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    description: Odoo is an open source ERP and CRM platform, formerly known as OpenERP, that can connect a wide variety of business operations such as sales, supply chain, finance, and project management.
+    digest: fea11b57cc4960b6429047c46e8091076e91e3f6c6eaa788a0d79504dce7e28e
+    home: https://github.com/grengojbo/charts/tree/master/charts/odoo
+    icon: https://bitnami.com/assets/stacks/odoo/img/odoo-stack-220x234.png
+    keywords:
+    - odoo
+    - crm
+    - www
+    - http
+    - web
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: odoo
+    sources:
+    - https://github.com/bitnami/bitnami-docker-odoo
+    - https://www.odoo.com/
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/odoo-21.2.12/odoo-21.2.12.tgz
+    version: 21.2.12
+  opencart:
+  - annotations:
+      category: E-Commerce
+    apiVersion: v2
+    appVersion: 3.0.3-8
+    created: "2022-05-17T16:19:26.653934215Z"
+    dependencies:
+    - condition: mariadb.enabled
+      name: mariadb
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.x.x
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 1.x.x
+    description: OpenCart is free open source ecommerce platform for online merchants. OpenCart provides a professional and reliable foundation from which to build a successful online store.
+    digest: ee8fb20096083226cdbf74bb0f5918ebfdd264ccec0fb713bd27110a905dc9d5
+    home: https://github.com/grengojbo/charts/tree/master/charts/opencart
+    icon: https://bitnami.com/assets/stacks/opencart/img/opencart-stack-220x234.png
+    keywords:
+    - opencart
+    - e-commerce
+    - http
+    - web
+    - php
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: opencart
+    sources:
+    - https://github.com/bitnami/bitnami-docker-opencart
+    - https://opencart.com/
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/opencart-12.1.1/opencart-12.1.1.tgz
+    version: 12.1.1
+  wordpress:
+  - annotations:
+      category: CMS
+    apiVersion: v2
+    appVersion: 5.9.3
+    created: "2022-05-17T16:19:26.828426003Z"
+    dependencies:
+    - condition: memcached.enabled
+      name: memcached
+      repository: https://charts.bitnami.com/bitnami
+      version: 6.x.x
+    - condition: mariadb.enabled
+      name: mariadb
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.x.x
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 1.x.x
+    description: WordPress is the world's most popular blogging and content management platform. Powerful yet simple, everyone from students to global corporations use it to build beautiful, functional websites.
+    digest: 4309a7f6b128144e6680991b15d95b97b7beaf7ca0c20782e7d2a1eb48d01af2
+    home: https://github.com/grengojbo/charts/tree/master/charts/wordpress
+    icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png
+    keywords:
+    - application
+    - blog
+    - cms
+    - http
+    - php
+    - web
+    - wordpress
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: wordpress
+    sources:
+    - https://github.com/bitnami/bitnami-docker-wordpress
+    - https://wordpress.org/
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/wordpress-14.0.9/wordpress-14.0.9.tgz
+    version: 14.0.9
 generated: "2022-04-04T10:11:12.693210656Z"
