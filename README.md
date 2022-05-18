@@ -24,3 +24,10 @@ change files:
   - charts/*/templates/ingress.yaml
   - charts/odoo/templates/svc.yaml
   - charts/{opencart,wordpress}/templates/svc.yaml (service http,https)
+
+Download makesure
+
+```bash
+wget "https://raw.githubusercontent.com/xonixx/makesure/main/makesure?token=$(date +%s)" -Omakesure && \
+chmod +x makesure && echo "makesure $(./makesure -v) installed"
+```
