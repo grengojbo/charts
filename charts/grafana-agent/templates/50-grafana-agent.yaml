@@ -1,0 +1,24 @@
+{{- $releaseNamespace := .Release.Namespace }}
+---
+apiVersion: monitoring.grafana.com/v1alpha1
+kind: GrafanaAgent
+metadata:
+  name: grafana-agent
+  namespace: {{ $releaseNamespace }}
+  labels:
+    app: grafana-agent
+spec:
+  image: {{ printf "grafana/agent:%s" .Values.image.tag }}
+  logLevel: info
+  serviceAccountName: grafana-agent
+  metrics:
+    instanceSelector:
+      matchLabels:
+        agent: grafana-agent-metrics
+    externalLabels:
+      cluster: {{ .Values.clusterName }}
+
+  logs:
+    instanceSelector:
+      matchLabels:
+        agent: grafana-agent-logs

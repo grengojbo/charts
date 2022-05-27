@@ -1,0 +1,37 @@
+{{- $releaseNamespace := .Release.Namespace }}
+---
+apiVersion: monitoring.grafana.com/v1alpha1
+kind: MetricsInstance
+metadata:
+  name: primary
+  namespace: {{ $releaseNamespace }}
+  labels:
+    agent: grafana-agent-metrics
+spec:
+  remoteWrite:
+    - url: {{ .Values.prometheus.remoteWrite }}
+      basicAuth:
+        username:
+          name: primary-credentials-metrics
+          key: username
+        password:
+          name: primary-credentials-metrics
+          key: password
+  # Supply an empty namespace selector to look in all namespaces. Remove
+  # this to only look in the same namespace as the MetricsInstance CR
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector:
+    matchLabels:
+      instance: primary
+  # Supply an empty namespace selector to look in all namespaces. Remove
+  # this to only look in the same namespace as the MetricsInstance CR.
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector:
+    matchLabels:
+      instance: primary
+  # Supply an empty namespace selector to look in all namespaces. Remove
+  # this to only look in the same namespace as the MetricsInstance CR.
+  probeNamespaceSelector: {}
+  probeSelector:
+    matchLabels:
+      instance: primary

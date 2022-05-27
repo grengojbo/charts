@@ -1,0 +1,3 @@
+{{- $releaseNamespace := .Release.Namespace }}
+# ---
+#   namespace: {{ $releaseNamespace }}
