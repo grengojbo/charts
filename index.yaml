@@ -3,6 +3,20 @@ entries:
   grafana-agent:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-05-27T15:02:11.570467573Z"
+    description: A Helm chart for Kubernetes
+    digest: 548c15b0fe01eeeb3c471922afb9f2bc4c1d9e908970eb80bf8f6cb628638e19
+    home: https://github.com/grengojbo/charts/tree/master/charts/grafana-agent
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: grafana-agent
+    type: application
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/grafana-agent-0.1.1/grafana-agent-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-05-27T14:35:20.427845484Z"
     description: A Helm chart for Kubernetes
     digest: c5441de7bbbd21859be81c18f6794e8e681b7e57147c291f4a047d6964d61528
@@ -16,6 +30,20 @@ entries:
     - https://github.com/grengojbo/charts/releases/download/grafana-agent-0.1.0/grafana-agent-0.1.0.tgz
     version: 0.1.0
   lib:
+  - apiVersion: v2
+    appVersion: 1.17.0
+    created: "2022-05-27T15:02:11.71018232Z"
+    description: A Helm chart library for Kubernetes
+    digest: 4562020db9e24b2e8442c2e102b8c5949b411f19ee7b155dbb34bf27ae8e3071
+    home: https://github.com/grengojbo/charts/tree/master/charts/lib
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: lib
+    type: library
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/lib-1.17.0/lib-1.17.0.tgz
+    version: 1.17.0
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2022-05-17T16:19:26.342421237Z"
