@@ -1,5 +1,20 @@
 apiVersion: v1
 entries:
+  grafana-agent:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-05-27T14:35:20.427845484Z"
+    description: A Helm chart for Kubernetes
+    digest: c5441de7bbbd21859be81c18f6794e8e681b7e57147c291f4a047d6964d61528
+    home: https://github.com/grengojbo/charts/tree/master/charts/grafana-agent
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: grafana-agent
+    type: application
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/grafana-agent-0.1.0/grafana-agent-0.1.0.tgz
+    version: 0.1.0
   lib:
   - apiVersion: v2
     appVersion: 1.16.0
