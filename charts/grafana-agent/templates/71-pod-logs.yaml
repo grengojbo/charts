@@ -11,7 +11,7 @@ spec:
   pipelineStages:
     - {{ .Values.pipelineStages }}: {}
   namespaceSelector:
-    matchNames: {}
+    matchNames: []
     # - {{ $releaseNamespace }}
   selector:
     matchLabels: {}
