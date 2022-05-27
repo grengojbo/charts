@@ -1,0 +1,31 @@
+# Default values for grafana-agent.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+clusterName: cloud
+
+namespaceSelectorLoki:
+  - default
+  
+
+prometheus:
+  remoteWrite: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom/push
+  username: noname
+  apiKey: noname
+
+log:
+  remoteWrite: https://logs-prod-eu-west-0.grafana.net/loki/api/v1/push
+  username: noname
+  apiKey: noname
+
+pipelineStages: cri # docker
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: v0.24.2
+
+

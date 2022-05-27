@@ -1,0 +1,17 @@
+{{- $releaseNamespace := .Release.Namespace }}
+---
+apiVersion: monitoring.grafana.com/v1alpha1
+kind: PodLogs
+metadata:
+  labels:
+    instance: primary
+  name: kubernetes-pods
+  namespace: {{ $releaseNamespace }}
+spec:
+  pipelineStages:
+    - {{ .Values.pipelineStages }}: {}
+  namespaceSelector:
+    matchNames: {}
+    # - {{ $releaseNamespace }}
+  selector:
+    matchLabels: {}
