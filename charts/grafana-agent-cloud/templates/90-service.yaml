@@ -1,0 +1,17 @@
+{{- $releaseNamespace := .Release.Namespace }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: grafana-agent
+  name: grafana-agent
+  namespace: {{ $releaseNamespace }}
+spec:
+  clusterIP: None
+  ports:
+  - name: grafana-agent-http-metrics
+    port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.port }}
+  selector:
+    name: grafana-agent
