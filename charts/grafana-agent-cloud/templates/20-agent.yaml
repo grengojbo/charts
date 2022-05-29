@@ -142,6 +142,9 @@ data:
             - source_labels: [__meta_kubernetes_pod_name]
               action: replace
               target_label: pod
+        {{- with .Values.prometheus.extraScrapeConfigs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
     integrations:
       eventhandler:
         cache_path: /var/lib/agent/eventhandler.cache

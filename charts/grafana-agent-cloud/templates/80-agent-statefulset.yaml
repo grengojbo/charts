@@ -47,11 +47,17 @@ spec:
           name: agent-wal
         - mountPath: /etc/agent
           name: grafana-agent
+        {{- with .Values.prometheus.extraVolumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       serviceAccount: grafana-agent
       volumes:
       - configMap:
           name: grafana-agent
         name: grafana-agent
+      {{- with .Values.prometheus.extraVolumes }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:

@@ -1,3 +1,4 @@
+{{- if and .Values.log.enabled (eq .Values.log.collector "loki") }}
 {{- $releaseNamespace := .Release.Namespace }}
 {{- $username := .Values.prometheus.username }}
 {{- $password := .Values.prometheus.apiKey }}
@@ -45,6 +46,28 @@ data:
         target_config:
           sync_period: 10s
         scrape_configs:
+        {{- if .Values.log.journal }}
+        # https://grafana.com/docs/loki/latest/clients/promtail/scraping/
+        - job_name: systemd-journal
+          journal:
+            json: false
+            max_age: 12h
+            path: /var/log/journal
+            labels:
+              job: systemd-journal
+              # job: default/systemd-journal
+              cluster: {{ .Values.clusterName }}
+          relabel_configs:
+            - source_labels:
+              - __journal__systemd_unit
+              target_label: 'unit'
+            - source_labels:
+              - __journal__hostname
+              target_label: nodename
+            - source_labels:
+              - __journal_syslog_identifier
+              target_label: syslog_identifier
+        {{- end }}
         - job_name: integrations/kubernetes/pod-logs
           kubernetes_sd_configs:
             - role: pod
@@ -81,3 +104,7 @@ data:
                 - __meta_kubernetes_pod_uid
                 - __meta_kubernetes_pod_container_name
               target_label: __path__
+        {{- with .Values.log.extraScrapeConfigs }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+{{- end }}

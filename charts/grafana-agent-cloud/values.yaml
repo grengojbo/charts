@@ -13,12 +13,21 @@ prometheus:
   remoteWrite: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom/push
   username: 123456
   apiKey: noname
+  extraScrapeConfigs: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
 log:
   enabled: true
+  collector: loki
   remoteWrite: https://logs-prod-eu-west-0.grafana.net/loki/api/v1/push
   username: 123456
   apiKey: noname
+  journal: enabled
+  # https://grafana.com/blog/2020/07/21/loki-tutorial-how-to-send-logs-from-eks-with-promtail-to-get-full-visibility-in-grafana/
+  extraScrapeConfigs: []
+  extraVolumes: []
+  extraVolumeMounts: []
 
 pipelineStages: cri # docker
 
