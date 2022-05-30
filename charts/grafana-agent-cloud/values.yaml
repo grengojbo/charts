@@ -1,22 +1,46 @@
-# Default values for grafana-agent-cloud.
+# Default values for app.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+  env: development
+  hookDeletePolicy: before-hook-creation
+  system:
+    storageclass: "local-path"
+  tests: "no"
+
+## @param clusterDomain Kubernetes Cluster Domain
+##
+clusterDomain: cluster.local
+
+## @param clusterName Cluster Name Grafana Cloud
+##
+clusterName: cloud
 
 replicaCount: 1
-
-clusterName: cloud
 
 namespaceSelectorLoki:
   - default
   
-prometheus:
-  remoteWrite: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom/push
+# https://github.com/klaushofrichter/istio/blob/master/grafana-cloud/grafana-cloud-deploy.sh
+monitoring:
+  remoteWrite: https://monitoring-prod-01-eu-west-0.grafana.net/api/prom/push
   username: 123456
   apiKey: noname
   extraScrapeConfigs: []
+  # extraScrapeConfigs:
+  #   - source_labels: [__meta_kubernetes_endpoint_node_name]
+  #     action: replace
+  #     target_label: node
   extraVolumes: []
   extraVolumeMounts: []
+  # tolerations:
+  #   - key: CriticalAddonsOnly
+  #     operator: Exists
+  #   - operator: Exists
+  #     effect: NoSchedule
+  # kubectl patch deployment grafana-agent -n grafana-cloud -p '{"spec":{"template":{"spec":{"containers":[{"name":"agent","resources":{"limits":{"cpu":"800m","memory":"800M"},"requests":{"cpu":"200m","memory":"200M"}}}]}}}}' 
 
+# https://github.com/klaushofrichter/istio/blob/master/fluentbit/fluentbit-deploy.sh
 log:
   enabled: true
   collector: loki
@@ -32,8 +56,25 @@ log:
 pipelineStages: cri # docker
 
 # node-exporter:
+# Support LENS https://github.com/klaushofrichter/k3d-prometheus-lens/commit/a00bc0e26012d7bc93855f0a04eacba0dbfd98b8#diff-4ab1387efe2b2c631a090d373c47d473d6fd2e1fd17b2b0debcc770da60a7307
 nodeExporter:
   enabled: true
+  # service:
+  #   labels:
+  #     jobLabel: node-exporter
+  # serviceMonitor:
+  #   enabled: true
+  #   jobLabel: jobLabel
+  #   relabelings:
+  #     - regex: (.+)
+  #       sourceLabels:
+  #         - __meta_kubernetes_endpoint_node_name
+  #       targetLabel: node
+
+kubeStateMetrics:
+  enabled: true
+  image:
+    tag: v2.4.2
 
 image:
   repository: grafana/agent

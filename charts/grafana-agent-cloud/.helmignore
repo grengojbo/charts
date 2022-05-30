@@ -21,3 +21,7 @@
 .idea/
 *.tmproj
 .vscode/
+
+# templates/20-agent.yaml
+templates/25-agent-logs-old.yaml
+templates/20-agent-old.yaml
