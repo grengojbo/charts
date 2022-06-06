@@ -98,9 +98,6 @@ ingress:
       tls: ""
       services:
         - path: /
-          name: ""
-          port: ""
-          pathType: Prefix
     local:
       name: demo.lvh.me
       tls: ""

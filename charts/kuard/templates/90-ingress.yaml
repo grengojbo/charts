@@ -26,7 +26,7 @@ spec:
         {{- if ne $hostName "none" }}
         host: {{ $hostName }}
         {{- end }}
-        pathType: {{ .pathType }}
+        pathType: {{ .pathType | default "Prefix" }}
         backend:
           service:
             name: {{ .name | default $fullName }}
