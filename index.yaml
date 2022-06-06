@@ -100,6 +100,20 @@ entries:
   kuard:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2022-06-06T18:45:48.483010698Z"
+    description: Demo app for Kubernetes Up
+    digest: ffbdd1c2f7284a42bdce8b7bdafa8e6ea65a8aa3233ab8e16b346f70a5804068
+    home: https://github.com/grengojbo/charts/tree/master/charts/kuard
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: kuard
+    type: application
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/kuard-0.1.2/kuard-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2022-06-06T16:21:57.205649285Z"
     description: Demo app for Kubernetes Up
     digest: 4be826273e8ad2f49524b0be8f51c8e2d1cac51e7df470b5d63b4bf9f3be49af
