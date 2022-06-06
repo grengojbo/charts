@@ -3,6 +3,20 @@ entries:
   grafana-agent:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-06-06T16:21:56.978951439Z"
+    description: A Helm chart for Kubernetes
+    digest: b2dcec97ac662520b9ad0d84a4b9c0053bfdb231d96ebfdf8bd429611e34ac26
+    home: https://github.com/grengojbo/charts/tree/master/charts/grafana-agent
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: grafana-agent
+    type: application
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/grafana-agent-0.1.4/grafana-agent-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-05-27T15:47:39.949412124Z"
     description: A Helm chart for Kubernetes
     digest: 52397a5d2107f910aef4fbe0fabf05ee49f84a35a1efd85040b9e53ab1675467
@@ -57,7 +71,62 @@ entries:
     urls:
     - https://github.com/grengojbo/charts/releases/download/grafana-agent-0.1.0/grafana-agent-0.1.0.tgz
     version: 0.1.0
+  grafana-agent-cloud:
+  - annotations:
+      category: Monitoring
+    apiVersion: v2
+    appVersion: v0.24.0
+    created: "2022-06-06T16:21:57.10016911Z"
+    description: A Helm chart for Grafana Agent for Grafana Cloud
+    digest: 078a3257445d2e32d3eafe21a51f5b0924b7c51e13871633287af2f9d8d6f1a6
+    home: https://github.com/grengojbo/charts/tree/master/charts/grafana-agent-cloud
+    icon: https://raw.githubusercontent.com/grafana/agent/v0.24.2/docs/assets/logo_and_name.png
+    keywords:
+    - grafana
+    - loki
+    - prometheus
+    - monitoring
+    - cortex
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: grafana-agent-cloud
+    sources:
+    - https://github.com/grengojbo/charts/blob/master/charts/grafana-agent-cloud
+    type: application
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/grafana-agent-cloud-0.2.1/grafana-agent-cloud-0.2.1.tgz
+    version: 0.2.1
+  kuard:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2022-06-06T16:21:57.205649285Z"
+    description: Demo app for Kubernetes Up
+    digest: 4be826273e8ad2f49524b0be8f51c8e2d1cac51e7df470b5d63b4bf9f3be49af
+    home: https://github.com/grengojbo/charts/tree/master/charts/kuard
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: kuard
+    type: application
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/kuard-0.1.1/kuard-0.1.1.tgz
+    version: 0.1.1
   lib:
+  - apiVersion: v2
+    appVersion: 1.17.0
+    created: "2022-06-06T16:21:57.358067949Z"
+    description: A Helm chart library for Kubernetes
+    digest: 92efdcd9fde457172024bfe4bc07aab536a55aba1177cfd17e6af9eb20406684
+    home: https://github.com/grengojbo/charts/tree/master/charts/lib
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: lib
+    type: library
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/lib-1.17.1/lib-1.17.1.tgz
+    version: 1.17.1
   - apiVersion: v2
     appVersion: 1.17.0
     created: "2022-05-27T15:02:11.71018232Z"
