@@ -27,7 +27,7 @@ global:
 ##
 clusterDomain: cluster.local
 
-name: "myapp"
+name: "kuard"
 port: 8080
 updateStrategy: RollingUpdate
 hookEenabled: true
