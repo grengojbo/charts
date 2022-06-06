@@ -1,0 +1,47 @@
+{{- if .Values.ingress.enabled -}}
+---
+{{- $releaseNamespace := .Release.Namespace }}
+{{- $fullName := include "kuard.fullname" . }}
+{{- $svcPort := .Values.service.port }}
+{{- $host := pluck .Values.global.env .Values.ingress.host | first | default .Values.ingress.host._default }}
+{{- $hostName := $host.name }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ $releaseNamespace }}
+  labels:
+    {{- include "kuard.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+# spec:
+#   rules:
+#   - http:
+#       paths:
+#       - path: /testpath
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: kuard
+#             port:
+#               number: 8080
+spec:
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  rules:
+  - http:
+      paths:
+      {{- range $host.services }}
+      - path: {{ .path }}
+        {{- if ne $hostName "none" }}
+        host: {{ $hostName }}
+        {{- end }}
+        pathType: {{ .pathType }}
+        backend:
+          service:
+            name: {{ .name | default $fullName }}
+            port:
+              number: {{ .port | default $svcPort }}
+      {{- end }}
+{{- end }}

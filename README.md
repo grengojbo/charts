@@ -10,11 +10,11 @@ Once Helm has been set up correctly, add the repo as follows:
 
 To install the <chart-name> chart:
 
-    helm install my-<chart-name> grengojbo/<chart-name>
+    helm install <chart-name> grengojbo/<chart-name>
 
 To uninstall the chart:
 
-    helm delete my-<chart-name>
+    helm delete <chart-name>
 
 ### For Chart Developer
 
