@@ -15,4 +15,4 @@
 # vendor/
 .vscode/
 
-/**/Chart.lock
+# /**/Chart.lock
