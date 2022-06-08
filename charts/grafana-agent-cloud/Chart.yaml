@@ -15,27 +15,29 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.2.1
+version: 0.3.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "v0.24.0"
+appVersion: "v0.25.0"
 
-# dependencies:
-#   - condition: kubeStateMetrics.enabled
-#     alias: kubeStateMetrics
-#     name: kube-state-metrics
-#     # tags:
-#     #  - kube-state-metrics
-#     repository: https://prometheus-community.github.io/helm-charts
-#     version: 4.X.X
-#   # - name: common
-#   #   repository: https://charts.bitnami.com/bitnami
-#   #   tags:
-#   #     - bitnami-common
-#   #   version: 1.x.x
+dependencies:
+  - condition: kube-state-metrics.enabled
+    name: kube-state-metrics
+    repository: https://prometheus-community.github.io/helm-charts
+    version: 4.X.X
+  - condition: node-exporter.enabled
+    alias: node-exporter
+    name: prometheus-node-exporter
+    repository: https://prometheus-community.github.io/helm-charts
+    version: 3.X.X
+  # - name: common
+  #   repository: https://charts.bitnami.com/bitnami
+  #   tags:
+  #     - bitnami-common
+  #   version: 1.x.x
 
 home: https://github.com/grengojbo/charts/tree/master/charts/grafana-agent-cloud
 icon: https://raw.githubusercontent.com/grafana/agent/v0.24.2/docs/assets/logo_and_name.png

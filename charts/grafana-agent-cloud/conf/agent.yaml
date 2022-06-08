@@ -3,6 +3,7 @@
 {{- $password := .Values.monitoring.apiKey }}
 {{- $usernameLog := .Values.log.username }}
 {{- $passwordLog := .Values.log.apiKey }}
+{{- $nodeExporter := "node-exporter" }}
 metrics:
   wal_directory: /var/lib/agent/wal
   global:
@@ -59,7 +60,7 @@ metrics:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
           insecure_skip_verify: false
           server_name: kubernetes
-    {{- if .Values.nodeExporter.enabled }}
+    {{- if (index .Values "node-exporter" "enabled") }}
     - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
       job_name: integrations/node-exporter
       kubernetes_sd_configs:

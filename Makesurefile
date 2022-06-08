@@ -1,0 +1,39 @@
+# @goal downloaded
+# @reached_if [[ -f code.tar.gz ]]
+#   wget http://domain/code.tar.gz
+  
+# @goal extracted
+# @depends_on downloaded
+#   tar xzf code.tar.gz 
+
+# @goal built
+# @depends_on extracted
+#   npm install
+#   npm run build
+
+# @goal deployed
+# @depends_on built
+#   scp -C -r build/* user@domain:~/www
+
+@goal dependency
+@doc Download HELM dependency
+  helm dependency update ./charts/grafana-agent-cloud
+
+@goal template
+@doc HELM template
+  helm template grafana-agent-cloud ./charts/grafana-agent-cloud \
+    --namespace monitoring \
+    --set clusterName=iwisops
+
+@goal grafana-agent-cloud
+@doc HELM Update grafana-agent-cloud
+  helm upgrade -i grafana-agent-cloud ./charts/grafana-agent-cloud \
+    --namespace monitoring --wait \
+    --set clusterName=mycluster
+
+@goal help
+@doc список комманд
+  ./makesure -l
+
+@goal default
+@depends_on help

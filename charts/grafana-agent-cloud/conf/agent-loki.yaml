@@ -17,7 +17,7 @@ metrics:
         username: {{ $username }}
         password: {{ $password }}
 integrations:
-  monitoring_remote_write:
+  prometheus_remote_write:
   - url: {{ .Values.monitoring.remoteWrite }}
     basic_auth:
       username: {{ $username }}

@@ -57,21 +57,24 @@ pipelineStages: cri # docker
 
 # node-exporter:
 # Support LENS https://github.com/klaushofrichter/k3d-prometheus-lens/commit/a00bc0e26012d7bc93855f0a04eacba0dbfd98b8#diff-4ab1387efe2b2c631a090d373c47d473d6fd2e1fd17b2b0debcc770da60a7307
-nodeExporter:
+node-exporter:
+  nameOverride: node-exporter
+  # fullnameOverride: node-exporter
   enabled: true
-  # service:
-  #   labels:
-  #     jobLabel: node-exporter
-  # serviceMonitor:
-  #   enabled: true
-  #   jobLabel: jobLabel
-  #   relabelings:
-  #     - regex: (.+)
-  #       sourceLabels:
-  #         - __meta_kubernetes_endpoint_node_name
-  #       targetLabel: node
+  service:
+    labels:
+      jobLabel: node-exporter
+  serviceMonitor:
+    enabled: true
+    jobLabel: jobLabel
+    relabelings:
+      - regex: (.+)
+        sourceLabels:
+          - __meta_kubernetes_endpoint_node_name
+        targetLabel: node
 
-kubeStateMetrics:
+kube-state-metrics:
+  nameOverride: kube-state-metrics
   enabled: true
   image:
     tag: v2.4.2
@@ -80,7 +83,7 @@ image:
   repository: grafana/agent
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: v0.24.0
+  tag: v0.25.0
 
 imagePullSecrets: []
 nameOverride: ""

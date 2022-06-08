@@ -9,7 +9,7 @@ Once Helm has been set up correctly, add the repo as follows:
 helm repo add grengojbo https://grengojbo.github.io/charts/
 ```
 
-To install the <chart-name> chart:
+To install the **grafana-agent-cloud** chart:
 
 
 ```bash
@@ -23,3 +23,10 @@ To uninstall the chart:
     helm delete monitoring
 ```
 
+[Image Tags](https://hub.docker.com/r/grafana/agent/tags)
+
+## Dashboards
+
+Kubernetes Nginx Ingress Prometheus NextGen
+
+cert-manager

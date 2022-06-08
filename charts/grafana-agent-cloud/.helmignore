@@ -22,6 +22,14 @@
 *.tmproj
 .vscode/
 
-# templates/20-agent.yaml
 templates/25-agent-logs-old.yaml
 templates/20-agent-old.yaml
+
+# templates/20-agent.yaml
+# templates/25-agent-logs.yaml
+
+# templates/40-cluster-role.yaml
+# templates/45-serviceaccount.yaml
+# templates/80-agent-statefulset.yaml
+# templates/85-agent-loki-daemonset.yaml
+# templates/90-service.yaml
