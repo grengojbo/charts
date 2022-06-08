@@ -75,6 +75,41 @@ entries:
   - annotations:
       category: Monitoring
     apiVersion: v2
+    appVersion: v0.25.0
+    created: "2022-06-08T19:01:17.618092265Z"
+    dependencies:
+    - condition: kube-state-metrics.enabled
+      name: kube-state-metrics
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 4.X.X
+    - alias: node-exporter
+      condition: node-exporter.enabled
+      name: prometheus-node-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 3.X.X
+    description: A Helm chart for Grafana Agent for Grafana Cloud
+    digest: 877ed6ff31a62f9be1bd8702c73621ac5192703472ae1972de50651b9a981aa9
+    home: https://github.com/grengojbo/charts/tree/master/charts/grafana-agent-cloud
+    icon: https://raw.githubusercontent.com/grafana/agent/v0.24.2/docs/assets/logo_and_name.png
+    keywords:
+    - grafana
+    - loki
+    - prometheus
+    - monitoring
+    - cortex
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: grafana-agent-cloud
+    sources:
+    - https://github.com/grengojbo/charts/blob/master/charts/grafana-agent-cloud
+    type: application
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/grafana-agent-cloud-0.3.1/grafana-agent-cloud-0.3.1.tgz
+    version: 0.3.1
+  - annotations:
+      category: Monitoring
+    apiVersion: v2
     appVersion: v0.24.0
     created: "2022-06-06T16:21:57.10016911Z"
     description: A Helm chart for Grafana Agent for Grafana Cloud
