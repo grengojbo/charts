@@ -76,6 +76,41 @@ entries:
       category: Monitoring
     apiVersion: v2
     appVersion: v0.25.0
+    created: "2022-06-08T20:47:55.465377026Z"
+    dependencies:
+    - condition: kube-state-metrics.enabled
+      name: kube-state-metrics
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 4.X.X
+    - alias: node-exporter
+      condition: node-exporter.enabled
+      name: prometheus-node-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 3.X.X
+    description: A Helm chart for Grafana Agent for Grafana Cloud
+    digest: 81f1e018f59864f1c7d1f787200e248790382aa2bd2d0c3407aece903801c55d
+    home: https://github.com/grengojbo/charts/tree/master/charts/grafana-agent-cloud
+    icon: https://raw.githubusercontent.com/grafana/agent/v0.24.2/docs/assets/logo_and_name.png
+    keywords:
+    - grafana
+    - loki
+    - prometheus
+    - monitoring
+    - cortex
+    maintainers:
+    - email: oleg.dolya@gmail.com
+      name: grengojbo
+    name: grafana-agent-cloud
+    sources:
+    - https://github.com/grengojbo/charts/blob/master/charts/grafana-agent-cloud
+    type: application
+    urls:
+    - https://github.com/grengojbo/charts/releases/download/grafana-agent-cloud-0.3.2/grafana-agent-cloud-0.3.2.tgz
+    version: 0.3.2
+  - annotations:
+      category: Monitoring
+    apiVersion: v2
+    appVersion: v0.25.0
     created: "2022-06-08T19:01:17.618092265Z"
     dependencies:
     - condition: kube-state-metrics.enabled
@@ -242,7 +277,9 @@ entries:
     - name: common
       repository: https://charts.bitnami.com/bitnami
       version: 1.x.x
-    description: Odoo is an open source ERP and CRM platform, formerly known as OpenERP, that can connect a wide variety of business operations such as sales, supply chain, finance, and project management.
+    description: Odoo is an open source ERP and CRM platform, formerly known as OpenERP,
+      that can connect a wide variety of business operations such as sales, supply
+      chain, finance, and project management.
     digest: fea11b57cc4960b6429047c46e8091076e91e3f6c6eaa788a0d79504dce7e28e
     home: https://github.com/grengojbo/charts/tree/master/charts/odoo
     icon: https://bitnami.com/assets/stacks/odoo/img/odoo-stack-220x234.png
@@ -278,7 +315,9 @@ entries:
       tags:
       - bitnami-common
       version: 1.x.x
-    description: OpenCart is free open source ecommerce platform for online merchants. OpenCart provides a professional and reliable foundation from which to build a successful online store.
+    description: OpenCart is free open source ecommerce platform for online merchants.
+      OpenCart provides a professional and reliable foundation from which to build
+      a successful online store.
     digest: ee8fb20096083226cdbf74bb0f5918ebfdd264ccec0fb713bd27110a905dc9d5
     home: https://github.com/grengojbo/charts/tree/master/charts/opencart
     icon: https://bitnami.com/assets/stacks/opencart/img/opencart-stack-220x234.png
@@ -318,7 +357,9 @@ entries:
       tags:
       - bitnami-common
       version: 1.x.x
-    description: WordPress is the world's most popular blogging and content management platform. Powerful yet simple, everyone from students to global corporations use it to build beautiful, functional websites.
+    description: WordPress is the world's most popular blogging and content management
+      platform. Powerful yet simple, everyone from students to global corporations
+      use it to build beautiful, functional websites.
     digest: 4309a7f6b128144e6680991b15d95b97b7beaf7ca0c20782e7d2a1eb48d01af2
     home: https://github.com/grengojbo/charts/tree/master/charts/wordpress
     icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png
@@ -340,4 +381,4 @@ entries:
     urls:
     - https://github.com/grengojbo/charts/releases/download/wordpress-14.0.9/wordpress-14.0.9.tgz
     version: 14.0.9
-generated: "2022-04-04T10:11:12.693210656Z"
+generated: "2022-06-08T20:47:55.465405426Z"
