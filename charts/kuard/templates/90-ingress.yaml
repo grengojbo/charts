@@ -18,6 +18,13 @@ metadata:
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- if and .Values.ingress.tls (ne $hostName "none") }}
+  {{- $secretName :=  .Values.ingress.tls }}
+  tls:
+    - hosts:
+      - {{ $hostName | quote }}
+      secretName: {{ $secretName | default (printf "%s-tls" $fullName) }}
+  {{- end }}
   rules:
   {{- if ne $hostName "none" }}
   - host: {{ $hostName }}
