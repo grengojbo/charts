@@ -19,13 +19,15 @@ metadata:
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   rules:
+  {{- if ne $hostName "none" }}
+  - host: {{ $hostName }}
+    http:
+  {{- else }}
   - http:
+  {{- end }}
       paths:
       {{- range $host.services }}
       - path: {{ .path }}
-        {{- if ne $hostName "none" }}
-        host: {{ $hostName }}
-        {{- end }}
         pathType: {{ .pathType | default "Prefix" }}
         backend:
           service:
